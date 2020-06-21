@@ -83,6 +83,26 @@ class FeatherClient {
     return authFinished.future;
   }
 
+      Future<bool> authWithJWT(String accessToken) async {
+    Completer authFinished = Completer<bool>();
+    socket.emitWithAck('create', [
+      'authentication',
+      <String, dynamic>{
+        'strategy': 'jwt',
+        'accessToken': accessToken,
+      }
+    ], ack: (authResult) {
+      try {
+        _accesToken = authResult[1]['accessToken'];
+        if (debug) print(_accesToken);
+        authFinished.complete(true);
+      } catch (e) {
+        authFinished.complete(false);
+      }
+    });
+    return authFinished.future;
+  }
+
   _authWithJWT() {
     socket.emitWithAck('create', [
       'authentication',
