@@ -6,7 +6,6 @@
  * @ Description:
  */
 
-
 import 'dart:async';
 import 'package:event_bus/event_bus.dart';
 import 'package:feathers_socket_client/featherjs_events.dart';
@@ -42,6 +41,7 @@ class FeatherClient {
         _authWithJWT();
       else if (_currentEmail != null && _currentPassword != null) {
         authWithCredential(_currentEmail, _currentPassword);
+        authWithJWT(_accesToken);
       }
     });
 
@@ -83,7 +83,7 @@ class FeatherClient {
     return authFinished.future;
   }
 
-      Future<bool> authWithJWT(String accessToken) async {
+  Future<bool> authWithJWT(String accessToken) async {
     Completer authFinished = Completer<bool>();
     socket.emitWithAck('create', [
       'authentication',
